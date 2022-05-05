@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
 
 import 'package:grpc/grpc_or_grpcweb.dart';
-import 'package:myapp/google/protobuf/timestamp.pb.dart';
-import 'package:myapp/tasklistitem.dart';
-import 'package:myapp/tasksdto.pbgrpc.dart';
+import 'package:familytasks/google/protobuf/timestamp.pb.dart';
+import 'package:familytasks/tasklistitem.dart';
+import 'package:familytasks/tasksdto.pbgrpc.dart';
 
 import 'mainscaffold.dart';
 import 'package:intl/intl.dart';

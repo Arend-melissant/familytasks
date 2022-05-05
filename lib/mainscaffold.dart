@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/settingspage.dart';
-import 'package:myapp/todopage.dart';
+import 'package:familytasks/settingspage.dart';
+import 'package:familytasks/todopage.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget body;

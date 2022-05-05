@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:grpc/grpc_or_grpcweb.dart';
-import 'package:myapp/tasklistitem.dart';
-import 'package:myapp/tasksdto.pbgrpc.dart';
+import 'package:familytasks/tasklistitem.dart';
+import 'package:familytasks/tasksdto.pbgrpc.dart';
 
 import 'mainscaffold.dart';
 

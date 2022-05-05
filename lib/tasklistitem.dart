@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:myapp/tasksdto.pb.dart';
+import 'package:familytasks/tasksdto.pb.dart';
 import 'package:intl/intl.dart';
-import 'package:myapp/tasksdto.pbenum.dart';
-import 'package:myapp/google/protobuf/timestamp.pb.dart';
+import 'package:familytasks/tasksdto.pbenum.dart';
+import 'package:familytasks/google/protobuf/timestamp.pb.dart';
 
 class TaskListItem extends StatefulWidget {
   TaskListItem(
