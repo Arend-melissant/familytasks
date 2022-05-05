@@ -1,0 +1,33 @@
+syntax="proto3";
+option go_package = "tasks/tasksdto";
+import "google/protobuf/timestamp.proto";
+
+service TasksService {
+    rpc ListTasks(ListTasksRequest) returns(ListTasksResponse);
+    rpc SaveTask(TaskResponse) returns(TaskResponse);
+}
+
+message ListTasksRequest {
+    int32 ID = 1;
+}
+
+message TaskResponse {
+    int32 ID = 1;
+    string task = 2;
+    enum STATUS {
+        UNKNOWN = 0;
+        NEW = 1;
+        ACTIVE = 2;
+        DONE = 3;
+        CANCELLED = 4;
+    }
+    STATUS status = 3;
+    google.protobuf.Timestamp at = 4;
+    google.protobuf.Timestamp due = 5;
+    string owner = 6;
+    string executor = 7;
+}
+
+message ListTasksResponse {
+    repeated TaskResponse tasks = 1;
+}
