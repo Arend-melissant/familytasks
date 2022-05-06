@@ -36,6 +36,8 @@ class _ToDoPageState extends State<ToDoPage> {
   List<TaskResponse> tasks = [];
   late ClientChannel channel;
   late TasksServiceClient stub;
+  bool hideCancelled = true;
+  bool hideDone = true;
 
   Future<void> _loadData() async {
     final req = ListTasksRequest(iD: 0);
@@ -44,15 +46,21 @@ class _ToDoPageState extends State<ToDoPage> {
     try {
       response = await stub.listTasks(req);
 
-      response.tasks.sort((a, b) =>
+      tasks = response.tasks
+          .where((i) => hideCancelled
+              ? (i.status != TaskResponse_STATUS.CANCELLED)
+              : true)
+          .toList();
+      tasks.sort((a, b) =>
           a.due.seconds.compareTo(b.due.seconds)); //.map((e) => e.toList();
       //tasks = response.tasks;
+
     } catch (e) {
       print('Caught error: $e');
     }
 
     setState(() {
-      tasks = response.tasks;
+      //tasks = response.tasks;
     });
   }
 
@@ -73,9 +81,10 @@ class _ToDoPageState extends State<ToDoPage> {
     super.initState();
   }
 
-  Future<void> refresh(TaskResponse task, String title, DateTime due,
-      String executor, String status) async {
+  Future<void> refresh(TaskResponse task, String title, String detail,
+      DateTime due, String executor, String status) async {
     task.task = title;
+    task.detail = detail;
     task.due = Timestamp.fromDateTime(due);
     task.executor = executor;
     task.status =
@@ -99,6 +108,19 @@ class _ToDoPageState extends State<ToDoPage> {
   }
 
   TextEditingController _textFieldController = TextEditingController();
+  TextEditingController _textDetailController = TextEditingController();
+
+  Future<void> _setDateTime(BuildContext context, TaskResponse task) async {
+    var date = await _selectDate(context, task.due.toDateTime().toLocal());
+    if (date != null) {
+      var time = await _selectTime(context, task.due.toDateTime().toLocal());
+
+      var dt = DateTime(date.year, date.month, date.day)
+          .add(Duration(hours: time?.hour ?? 0, minutes: time?.minute ?? 0));
+
+      print(dt);
+    }
+  }
 
   Future<void> _displayTextInputDialog(
       BuildContext context, TaskResponse task) async {
@@ -110,6 +132,7 @@ class _ToDoPageState extends State<ToDoPage> {
     DateTime selectedDateTime = DateTime.now();
 
     _textFieldController.text = task.task;
+    _textDetailController.text = task.detail;
     userDropdownValue = task.executor;
     selectedDateTime = task.due.toDateTime().toLocal();
     selectedDateString = DateFormat('yyyy-MM-dd').format(selectedDateTime);
@@ -126,7 +149,7 @@ class _ToDoPageState extends State<ToDoPage> {
               title: const Text("Edit task",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
               content: Column(
-                  //mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     const Text("Title",
@@ -137,8 +160,16 @@ class _ToDoPageState extends State<ToDoPage> {
                         child: TextField(
                           controller: _textFieldController,
                         )),
+                    const Text("Detail",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Divider(color: Colors.black),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: TextField(
+                          controller: _textDetailController,
+                        )),
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
                       child: const Text("User",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
@@ -168,7 +199,7 @@ class _ToDoPageState extends State<ToDoPage> {
                           }).toList(),
                         )),
                     Container(
-                      margin: const EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 10),
                       child: const Text("Status",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
@@ -196,7 +227,7 @@ class _ToDoPageState extends State<ToDoPage> {
                           }).toList(),
                         )),
                     Container(
-                      margin: const EdgeInsets.only(top: 20),
+                      margin: const EdgeInsets.only(top: 10),
                       child: const Text("Todo before",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
@@ -243,7 +274,8 @@ class _ToDoPageState extends State<ToDoPage> {
                               child: Text(
                                 selectedTimeString,
                                 style: const TextStyle(color: Colors.blue),
-                              )))
+                              ))),
+                      Container(height: 50.0)
                     ]),
                   ]),
               actions: <Widget>[
@@ -257,10 +289,16 @@ class _ToDoPageState extends State<ToDoPage> {
                   child: const Text('OK'),
                   onPressed: () {
                     setState(() {
-                      task.task = _textFieldController.text;
+                      // task.task = _textFieldController.text;
+                      // task.detail = _testDetailController.test;
                       //widget.notifyParent
-                      refresh(task, _textFieldController.text, selectedDateTime,
-                          userDropdownValue, statusDropdownValue);
+                      refresh(
+                          task,
+                          _textFieldController.text,
+                          _textDetailController.text,
+                          selectedDateTime,
+                          userDropdownValue,
+                          statusDropdownValue);
                     });
 
                     Navigator.pop(context);
@@ -312,21 +350,36 @@ class _ToDoPageState extends State<ToDoPage> {
                   child: ListView.builder(
                     itemBuilder: (BuildContext, index) {
                       return TaskListItem(
-                        task: tasks[index],
-                        notifyParent: refresh,
-                        openDialog: _displayTextInputDialog,
-                      );
+                          task: tasks[index],
+                          notifyParent: refresh,
+                          openDialog: _displayTextInputDialog,
+                          setDateTime: _setDateTime);
                     },
                     itemCount: tasks.length,
                     shrinkWrap: true,
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 50),
                     scrollDirection: Axis.vertical,
                   ))),
         ),
         bottomNavigationBar: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          child: Container(height: 50.0),
-        ),
+            shape: const CircularNotchedRectangle(),
+            child: Container(
+              height: 50.0,
+              child: Row(children: [
+                Checkbox(
+                  value: hideCancelled,
+
+                  //rint("set state")
+                  onChanged: (bool? value) {
+                    setState(() {
+                      hideCancelled = value!;
+                      _loadData();
+                    });
+                  },
+                ),
+                Text("hide cancelled")
+              ]),
+            )),
         floatingActionButton:
             Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
           SizedBox(width: 50),
@@ -334,10 +387,10 @@ class _ToDoPageState extends State<ToDoPage> {
               onPressed: () => {addTask()},
               tooltip: 'Add task',
               child: const Icon(Icons.add)),
-          FloatingActionButton(
-              onPressed: () => {_loadData()},
-              tooltip: 'Refresh',
-              child: const Icon(Icons.refresh))
+          // FloatingActionButton(
+          //     onPressed: () => {_loadData()},
+          //     tooltip: 'Refresh',
+          //     child: const Icon(Icons.refresh))
         ]));
   }
 }

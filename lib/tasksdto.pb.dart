@@ -66,11 +66,12 @@ class TaskResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'TaskResponse', createEmptyInstance: create)
     ..a<$core.int>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ID', $pb.PbFieldType.O3, protoName: 'ID')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'task')
-    ..e<TaskResponse_STATUS>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'status', $pb.PbFieldType.OE, defaultOrMaker: TaskResponse_STATUS.UNKNOWN, valueOf: TaskResponse_STATUS.valueOf, enumValues: TaskResponse_STATUS.values)
-    ..aOM<$1.Timestamp>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'at', subBuilder: $1.Timestamp.create)
-    ..aOM<$1.Timestamp>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'due', subBuilder: $1.Timestamp.create)
-    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'owner')
-    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'executor')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'detail')
+    ..e<TaskResponse_STATUS>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'status', $pb.PbFieldType.OE, defaultOrMaker: TaskResponse_STATUS.UNKNOWN, valueOf: TaskResponse_STATUS.valueOf, enumValues: TaskResponse_STATUS.values)
+    ..aOM<$1.Timestamp>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'at', subBuilder: $1.Timestamp.create)
+    ..aOM<$1.Timestamp>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'due', subBuilder: $1.Timestamp.create)
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'owner')
+    ..aOS(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'executor')
     ..hasRequiredFields = false
   ;
 
@@ -78,6 +79,7 @@ class TaskResponse extends $pb.GeneratedMessage {
   factory TaskResponse({
     $core.int? iD,
     $core.String? task,
+    $core.String? detail,
     TaskResponse_STATUS? status,
     $1.Timestamp? at,
     $1.Timestamp? due,
@@ -90,6 +92,9 @@ class TaskResponse extends $pb.GeneratedMessage {
     }
     if (task != null) {
       _result.task = task;
+    }
+    if (detail != null) {
+      _result.detail = detail;
     }
     if (status != null) {
       _result.status = status;
@@ -148,53 +153,62 @@ class TaskResponse extends $pb.GeneratedMessage {
   void clearTask() => clearField(2);
 
   @$pb.TagNumber(3)
-  TaskResponse_STATUS get status => $_getN(2);
+  $core.String get detail => $_getSZ(2);
   @$pb.TagNumber(3)
-  set status(TaskResponse_STATUS v) { setField(3, v); }
+  set detail($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasStatus() => $_has(2);
+  $core.bool hasDetail() => $_has(2);
   @$pb.TagNumber(3)
-  void clearStatus() => clearField(3);
+  void clearDetail() => clearField(3);
 
   @$pb.TagNumber(4)
-  $1.Timestamp get at => $_getN(3);
+  TaskResponse_STATUS get status => $_getN(3);
   @$pb.TagNumber(4)
-  set at($1.Timestamp v) { setField(4, v); }
+  set status(TaskResponse_STATUS v) { setField(4, v); }
   @$pb.TagNumber(4)
-  $core.bool hasAt() => $_has(3);
+  $core.bool hasStatus() => $_has(3);
   @$pb.TagNumber(4)
-  void clearAt() => clearField(4);
-  @$pb.TagNumber(4)
-  $1.Timestamp ensureAt() => $_ensure(3);
+  void clearStatus() => clearField(4);
 
   @$pb.TagNumber(5)
-  $1.Timestamp get due => $_getN(4);
+  $1.Timestamp get at => $_getN(4);
   @$pb.TagNumber(5)
-  set due($1.Timestamp v) { setField(5, v); }
+  set at($1.Timestamp v) { setField(5, v); }
   @$pb.TagNumber(5)
-  $core.bool hasDue() => $_has(4);
+  $core.bool hasAt() => $_has(4);
   @$pb.TagNumber(5)
-  void clearDue() => clearField(5);
+  void clearAt() => clearField(5);
   @$pb.TagNumber(5)
-  $1.Timestamp ensureDue() => $_ensure(4);
+  $1.Timestamp ensureAt() => $_ensure(4);
 
   @$pb.TagNumber(6)
-  $core.String get owner => $_getSZ(5);
+  $1.Timestamp get due => $_getN(5);
   @$pb.TagNumber(6)
-  set owner($core.String v) { $_setString(5, v); }
+  set due($1.Timestamp v) { setField(6, v); }
   @$pb.TagNumber(6)
-  $core.bool hasOwner() => $_has(5);
+  $core.bool hasDue() => $_has(5);
   @$pb.TagNumber(6)
-  void clearOwner() => clearField(6);
+  void clearDue() => clearField(6);
+  @$pb.TagNumber(6)
+  $1.Timestamp ensureDue() => $_ensure(5);
 
   @$pb.TagNumber(7)
-  $core.String get executor => $_getSZ(6);
+  $core.String get owner => $_getSZ(6);
   @$pb.TagNumber(7)
-  set executor($core.String v) { $_setString(6, v); }
+  set owner($core.String v) { $_setString(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasExecutor() => $_has(6);
+  $core.bool hasOwner() => $_has(6);
   @$pb.TagNumber(7)
-  void clearExecutor() => clearField(7);
+  void clearOwner() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.String get executor => $_getSZ(7);
+  @$pb.TagNumber(8)
+  set executor($core.String v) { $_setString(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasExecutor() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearExecutor() => clearField(8);
 }
 
 class ListTasksResponse extends $pb.GeneratedMessage {

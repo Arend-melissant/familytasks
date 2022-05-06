@@ -12,12 +12,14 @@ class TaskListItem extends StatefulWidget {
       {required this.task,
       required this.notifyParent,
       required this.openDialog,
+      required this.setDateTime,
       Key? key})
       : super(key: key);
   final TaskResponse task;
-  final Function(TaskResponse, String, DateTime, String, String) notifyParent;
+  final Function(TaskResponse, String, String, DateTime, String, String)
+      notifyParent;
   final Function(BuildContext context, TaskResponse task) openDialog;
-
+  final Function(BuildContext context, TaskResponse task) setDateTime;
   @override
   State<TaskListItem> createState() => _TaskListItemState();
 }
@@ -100,6 +102,7 @@ class _TaskListItemState extends State<TaskListItem> {
     widget.notifyParent(
         task,
         task.task,
+        task.detail,
         DateTime.fromMillisecondsSinceEpoch(task.due.seconds.toInt() * 1000),
         task.executor,
         result);
@@ -118,6 +121,9 @@ class _TaskListItemState extends State<TaskListItem> {
     return GestureDetector(
         onTap: () {
           widget.openDialog(context, widget.task);
+        },
+        onLongPress: () {
+          widget.setDateTime(context, widget.task);
         },
         child: MouseRegion(
             onEnter: (PointerEvent details) => {
@@ -147,7 +153,12 @@ class _TaskListItemState extends State<TaskListItem> {
                             fontWeight: FontWeight.bold,
                             color: widget.task.iD == hoverId
                                 ? Color(0x80FF0000)
-                                : Color(0x80000000),
+                                : (widget.task.status ==
+                                            TaskResponse_STATUS.ACTIVE ||
+                                        widget.task.status ==
+                                            TaskResponse_STATUS.NEW)
+                                    ? Color(0xC0000000)
+                                    : Color(0x80808080),
                             fontStyle: GetFontStyle(widget.task),
                             decoration: GetTextDecoration(widget.task))),
                   ),
@@ -162,12 +173,16 @@ class _TaskListItemState extends State<TaskListItem> {
                               " [" +
                               widget.task.executor +
                               "]",
-                          style: const TextStyle(
+                          style: TextStyle(
+                            color: (widget.task.status ==
+                                        TaskResponse_STATUS.ACTIVE ||
+                                    widget.task.status ==
+                                        TaskResponse_STATUS.NEW)
+                                ? Color(0xC0000000)
+                                : Color(0x80808080),
                             fontWeight: FontWeight.bold,
                           )),
-                      const Text(
-                          "subtitle die wat langer is dan we zouden verwachten",
-                          maxLines: 2),
+                      Text(widget.task.detail, maxLines: 2),
                     ])),
 
                 // onTap: () {

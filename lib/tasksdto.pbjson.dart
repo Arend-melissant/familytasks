@@ -24,11 +24,12 @@ const TaskResponse$json = const {
   '2': const [
     const {'1': 'ID', '3': 1, '4': 1, '5': 5, '10': 'ID'},
     const {'1': 'task', '3': 2, '4': 1, '5': 9, '10': 'task'},
-    const {'1': 'status', '3': 3, '4': 1, '5': 14, '6': '.TaskResponse.STATUS', '10': 'status'},
-    const {'1': 'at', '3': 4, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'at'},
-    const {'1': 'due', '3': 5, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'due'},
-    const {'1': 'owner', '3': 6, '4': 1, '5': 9, '10': 'owner'},
-    const {'1': 'executor', '3': 7, '4': 1, '5': 9, '10': 'executor'},
+    const {'1': 'detail', '3': 3, '4': 1, '5': 9, '10': 'detail'},
+    const {'1': 'status', '3': 4, '4': 1, '5': 14, '6': '.TaskResponse.STATUS', '10': 'status'},
+    const {'1': 'at', '3': 5, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'at'},
+    const {'1': 'due', '3': 6, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'due'},
+    const {'1': 'owner', '3': 7, '4': 1, '5': 9, '10': 'owner'},
+    const {'1': 'executor', '3': 8, '4': 1, '5': 9, '10': 'executor'},
   ],
   '4': const [TaskResponse_STATUS$json],
 };
@@ -46,7 +47,7 @@ const TaskResponse_STATUS$json = const {
 };
 
 /// Descriptor for `TaskResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List taskResponseDescriptor = $convert.base64Decode('CgxUYXNrUmVzcG9uc2USDgoCSUQYASABKAVSAklEEhIKBHRhc2sYAiABKAlSBHRhc2sSLAoGc3RhdHVzGAMgASgOMhQuVGFza1Jlc3BvbnNlLlNUQVRVU1IGc3RhdHVzEioKAmF0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFICYXQSLAoDZHVlGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIDZHVlEhQKBW93bmVyGAYgASgJUgVvd25lchIaCghleGVjdXRvchgHIAEoCVIIZXhlY3V0b3IiQwoGU1RBVFVTEgsKB1VOS05PV04QABIHCgNORVcQARIKCgZBQ1RJVkUQAhIICgRET05FEAMSDQoJQ0FOQ0VMTEVEEAQ=');
+final $typed_data.Uint8List taskResponseDescriptor = $convert.base64Decode('CgxUYXNrUmVzcG9uc2USDgoCSUQYASABKAVSAklEEhIKBHRhc2sYAiABKAlSBHRhc2sSFgoGZGV0YWlsGAMgASgJUgZkZXRhaWwSLAoGc3RhdHVzGAQgASgOMhQuVGFza1Jlc3BvbnNlLlNUQVRVU1IGc3RhdHVzEioKAmF0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFICYXQSLAoDZHVlGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcFIDZHVlEhQKBW93bmVyGAcgASgJUgVvd25lchIaCghleGVjdXRvchgIIAEoCVIIZXhlY3V0b3IiQwoGU1RBVFVTEgsKB1VOS05PV04QABIHCgNORVcQARIKCgZBQ1RJVkUQAhIICgRET05FEAMSDQoJQ0FOQ0VMTEVEEAQ=');
 @$core.Deprecated('Use listTasksResponseDescriptor instead')
 const ListTasksResponse$json = const {
   '1': 'ListTasksResponse',
