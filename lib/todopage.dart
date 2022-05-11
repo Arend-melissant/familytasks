@@ -10,6 +10,7 @@ import 'package:familytasks/tasksdto.pbgrpc.dart';
 
 import 'mainscaffold.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:alice/alice.dart';
 
@@ -28,20 +29,20 @@ class ToDoPage extends StatefulWidget {
   final String title;
 
   @override
-  State<ToDoPage> createState() => _ToDoPageState();
+  State<ToDoPage> createState() => ToDoPageState();
 }
 
-class _ToDoPageState extends State<ToDoPage> {
-  int _counter = 0;
+class ToDoPageState extends State<ToDoPage> {
   List<TaskResponse> tasks = [];
   late ClientChannel channel;
   late TasksServiceClient stub;
   bool hideCancelled = true;
   bool hideDone = true;
 
-  Future<void> _loadData() async {
+  Future<void> loadData() async {
     final req = ListTasksRequest(iD: 0);
 
+    print("Load data");
     ListTasksResponse response = ListTasksResponse();
     try {
       response = await stub.listTasks(req);
@@ -49,6 +50,9 @@ class _ToDoPageState extends State<ToDoPage> {
       tasks = response.tasks
           .where((i) => hideCancelled
               ? (i.status != TaskResponse_STATUS.CANCELLED)
+              : true)
+              .where((i) => hideDone
+              ? (i.status != TaskResponse_STATUS.DONE)
               : true)
           .toList();
       tasks.sort((a, b) =>
@@ -64,6 +68,14 @@ class _ToDoPageState extends State<ToDoPage> {
     });
   }
 
+_loadPrefs() async {
+  final prefs = await SharedPreferences.getInstance();
+  hideCancelled = (prefs.getInt('hideCancelled') ?? 0)==1;
+  hideDone = (prefs.getInt('hideDone') ?? 0)==1;
+}
+
+
+
   @override
   void initState() {
     channel = GrpcOrGrpcWebClientChannel.toSeparatePorts(
@@ -77,7 +89,15 @@ class _ToDoPageState extends State<ToDoPage> {
       //options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
     );
     stub = TasksServiceClient(channel);
-    _loadData();
+
+    print("start");
+
+    WidgetsBinding.instance?.addPostFrameCallback((_){
+      _loadPrefs();
+    });
+    
+
+    loadData();
     super.initState();
   }
 
@@ -90,7 +110,7 @@ class _ToDoPageState extends State<ToDoPage> {
     task.status =
         TaskResponse_STATUS.values.where((x) => x.name == status).first;
     await stub.saveTask(task);
-    await _loadData();
+    await loadData();
     setState(() {});
   }
 
@@ -118,7 +138,13 @@ class _ToDoPageState extends State<ToDoPage> {
       var dt = DateTime(date.year, date.month, date.day)
           .add(Duration(hours: time?.hour ?? 0, minutes: time?.minute ?? 0));
 
-      print(dt);
+      await refresh(
+                          task,
+                          task.task,
+                          task.detail,
+                          dt,
+                          task.executor,
+                          task.status.toString());
     }
   }
 
@@ -366,20 +392,10 @@ class _ToDoPageState extends State<ToDoPage> {
             child: Container(
               height: 50.0,
               child: Row(children: [
-                Checkbox(
-                  value: hideCancelled,
-
-                  //rint("set state")
-                  onChanged: (bool? value) {
-                    setState(() {
-                      hideCancelled = value!;
-                      _loadData();
-                    });
-                  },
-                ),
-                Text("hide cancelled")
-              ]),
-            )),
+              ]         
+                )
+              ),
+            ),
         floatingActionButton:
             Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
           SizedBox(width: 50),

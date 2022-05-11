@@ -12,10 +12,10 @@ import 'package:familytasks/todopage.dart';
 // import 'package:alice/alice.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(FamilyTasks());
 }
 
-class MyApp extends StatefulWidget {
+class FamilyTasks extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 
@@ -23,7 +23,7 @@ class MyApp extends StatefulWidget {
       context.findAncestorStateOfType<_MyAppState>();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<FamilyTasks> {
   //late Alice _alice;
 
   // @override
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
     developer.log("start application");
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Family Tasks',
       theme: ThemeData(
         // This is the theme of your application.
         //

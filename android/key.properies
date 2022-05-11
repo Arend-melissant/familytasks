@@ -1,0 +1,4 @@
+storePassword=mindshape
+keyPassword=mindshape
+keyAlias=upload
+storeFile=c:/Users/ArendMelissant/upload-keystore.jks

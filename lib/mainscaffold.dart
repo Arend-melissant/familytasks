@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:familytasks/settingspage.dart';
 import 'package:familytasks/todopage.dart';
 
+import 'main.dart';
+
 class MainScaffold extends StatelessWidget {
   final Widget body;
   final PreferredSizeWidget appBar;
@@ -53,16 +55,16 @@ class MainScaffold extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              title: const Text("Todo's"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (ctxt) => const ToDoPage(title: "Todo's")),
-                );
-              },
-            ),
+            // ListTile(
+            //   title: const Text("Todo's"),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (ctxt) => const ToDoPage(title: "Todo's")),
+            //     );
+            //   },
+            //),
           ],
         ),
       ),

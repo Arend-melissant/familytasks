@@ -82,6 +82,32 @@ class _TaskListItemState extends State<TaskListItem> {
     return result;
   }
 
+  Color GetColor(TaskResponse task, int hoverId) {
+    Color result = Color(0xC0000000);
+    bool overDue = task.due.seconds < Timestamp.fromDateTime(DateTime.now().toLocal()).seconds;
+
+    if (task.iD == hoverId) {
+      result = Color(0x800000FF);
+    } else {
+      switch (task.status) {
+        case TaskResponse_STATUS.NEW:
+          result = overDue ? Color(0xFFFF0000) :  Color(0xC0000000);
+          break;
+        case TaskResponse_STATUS.ACTIVE:
+          result = overDue ? Color(0xFFFF0000) :  Color(0xC0000000);
+          break;
+        case TaskResponse_STATUS.CANCELLED:
+          result = Color(0x80808080);
+          break;
+        case TaskResponse_STATUS.DONE:
+          result = Color(0x80808080);
+          break;
+      }
+      
+    }
+    return result;
+  }
+
   Future<void> setStatus(TaskResponse task) async {
     String result = "UNKNOWN";
     switch (task.status) {
@@ -151,18 +177,11 @@ class _TaskListItemState extends State<TaskListItem> {
                         style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
-                            color: widget.task.iD == hoverId
-                                ? Color(0x80FF0000)
-                                : (widget.task.status ==
-                                            TaskResponse_STATUS.ACTIVE ||
-                                        widget.task.status ==
-                                            TaskResponse_STATUS.NEW)
-                                    ? Color(0xC0000000)
-                                    : Color(0x80808080),
+                            color: GetColor(widget.task, hoverId),
                             fontStyle: GetFontStyle(widget.task),
-                            decoration: GetTextDecoration(widget.task))),
+                            decoration: GetTextDecoration(widget.task)))),
                   ),
-                ),
+                
 
                 subtitle: Align(
                     alignment: Alignment.center,
@@ -174,15 +193,13 @@ class _TaskListItemState extends State<TaskListItem> {
                               widget.task.executor +
                               "]",
                           style: TextStyle(
-                            color: (widget.task.status ==
-                                        TaskResponse_STATUS.ACTIVE ||
-                                    widget.task.status ==
-                                        TaskResponse_STATUS.NEW)
-                                ? Color(0xC0000000)
-                                : Color(0x80808080),
+                            color: GetColor(widget.task, hoverId),
                             fontWeight: FontWeight.bold,
                           )),
-                      Text(widget.task.detail, maxLines: 2),
+                      Text(widget.task.detail, maxLines: 2, style: TextStyle(
+                            color: GetColor(widget.task, hoverId),
+                            fontWeight: FontWeight.bold,
+                          ))
                     ])),
 
                 // onTap: () {

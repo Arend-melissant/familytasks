@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:grpc/grpc_or_grpcweb.dart';
 import 'package:familytasks/tasklistitem.dart';
 import 'package:familytasks/tasksdto.pbgrpc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'mainscaffold.dart';
 
@@ -22,11 +23,39 @@ class SettingsPage extends StatefulWidget {
 
   final String title;
 
+
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool hideCancelled = true;
+  bool hideDone = true;
+
+  _savePrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('hideCancelled', hideCancelled?1:0);
+    prefs.setInt('hideDone', hideDone?1:0);
+  }
+
+  _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      hideCancelled = (prefs.getInt('hideCancelled') ?? 0)==1;
+      hideDone = (prefs.getInt('hideDone') ?? 0)==1;
+
+    });
+  }
+
+@override   void initState() {
+    //   WidgetsBinding.instance?.addPostFrameCallback((_){
+    //   _loadPrefs();
+    // });
+    
+    _loadPrefs();
+    super.initState();
+}
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -35,7 +64,12 @@ class _SettingsPageState extends State<SettingsPage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return MainScaffold(
+    return WillPopScope(
+          onWillPop: () async {
+            print("going back");
+            return Future.value(false); //Replace by your conditionals here. false means you're block back action for this page
+          },
+          child: MainScaffold(
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
@@ -46,14 +80,43 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           title: Align(alignment: Alignment.center, child: Text(widget.title)),
         ),
-        body: Center(
-            // Center is a layout widget. It takes a single child and positions it
-            // in the middle of the parent.
-            child: Text("Settings")),
+        body: Column(
+          
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(children: [
+            Checkbox(
+                  value: hideCancelled,
+
+                  //rint("set state")
+                  onChanged: (bool? value) {
+                    setState(() {
+                      hideCancelled = value!;
+                      _savePrefs();
+                    });
+                  },
+                ),
+                Text("hide cancelled")
+            ]),
+            Row(children: [
+            Checkbox(
+                  value: hideDone,
+
+                  //rint("set state")
+                  onChanged: (bool? value) {
+                    setState(() {
+                      hideDone = value!;
+                      _savePrefs();
+                    });
+                  },
+                ),
+                Text("hide done")
+            ]),
+        ],),
         bottomNavigationBar: BottomAppBar(
           shape: const CircularNotchedRectangle(),
           child: Container(height: 50.0),
         ),
-        floatingActionButton: SizedBox.shrink());
+        floatingActionButton: SizedBox.shrink()));
   }
 }
