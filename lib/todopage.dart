@@ -1,4 +1,4 @@
-import 'dart:ffi' as ffi;
+//import 'dart:ffi' as ffi;
 
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
@@ -11,6 +11,7 @@ import 'package:familytasks/tasksdto.pbgrpc.dart';
 import 'mainscaffold.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:desktop_window/desktop_window.dart';
 
 // import 'package:alice/alice.dart';
 
@@ -34,7 +35,7 @@ class ToDoPage extends StatefulWidget {
 
 class ToDoPageState extends State<ToDoPage> {
   List<TaskResponse> tasks = [];
-  late ClientChannel channel;
+  late GrpcOrGrpcWebClientChannel channel;
   late TasksServiceClient stub;
   bool hideCancelled = true;
   bool hideDone = true;
@@ -51,12 +52,10 @@ class ToDoPageState extends State<ToDoPage> {
           .where((i) => hideCancelled
               ? (i.status != TaskResponse_STATUS.CANCELLED)
               : true)
-              .where((i) => hideDone
-              ? (i.status != TaskResponse_STATUS.DONE)
-              : true)
+          .where(
+              (i) => hideDone ? (i.status != TaskResponse_STATUS.DONE) : true)
           .toList();
-      tasks.sort((a, b) =>
-          a.due.seconds.compareTo(b.due.seconds)); //.map((e) => e.toList();
+      tasks.sort((a, b) => compareTasks(a, b)); //.map((e) => e.toList();
       //tasks = response.tasks;
 
     } catch (e) {
@@ -68,20 +67,32 @@ class ToDoPageState extends State<ToDoPage> {
     });
   }
 
-_loadPrefs() async {
-  final prefs = await SharedPreferences.getInstance();
-  hideCancelled = (prefs.getInt('hideCancelled') ?? 0)==1;
-  hideDone = (prefs.getInt('hideDone') ?? 0)==1;
-}
+  int compareTasks(TaskResponse main, TaskResponse other) {
+    if (main.status == other.status) {
+      return main.due.seconds.compareTo(other.due.seconds);
+    } else {
+      return main.status.value.compareTo(other.status.value);
+    }
+  }
 
+  _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    hideCancelled = (prefs.getInt('hideCancelled') ?? 0) == 1;
+    hideDone = (prefs.getInt('hideDone') ?? 0) == 1;
 
+    await DesktopWindow.setWindowSize(Size(700, 1200));
+
+    // DesktopWindow.setMinWindowSize(Size(300,400));
+    // DesktopWindow.setMaxWindowSize(Size(800,1024));
+  }
 
   @override
   void initState() {
-    channel = GrpcOrGrpcWebClientChannel.toSeparatePorts(
+    channel = GrpcOrGrpcWebClientChannel.toSeparateEndpoints(
       grpcPort: 50004,
       grpcWebPort: 50005,
-      host: 'tasks.armimema.be',
+      grpcHost: 'tasks.armimema.be',
+      grpcWebHost: 'tasks.armimema.be',
       //host: '35.192.158.227',
       //host: '127.0.0.1',
       grpcTransportSecure: false,
@@ -92,10 +103,9 @@ _loadPrefs() async {
 
     print("start");
 
-    WidgetsBinding.instance?.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadPrefs();
     });
-    
 
     loadData();
     super.initState();
@@ -138,13 +148,8 @@ _loadPrefs() async {
       var dt = DateTime(date.year, date.month, date.day)
           .add(Duration(hours: time?.hour ?? 0, minutes: time?.minute ?? 0));
 
-      await refresh(
-                          task,
-                          task.task,
-                          task.detail,
-                          dt,
-                          task.executor,
-                          task.status.toString());
+      await refresh(task, task.task, task.detail, dt, task.executor,
+          task.status.toString());
     }
   }
 
@@ -388,14 +393,9 @@ _loadPrefs() async {
                   ))),
         ),
         bottomNavigationBar: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            child: Container(
-              height: 50.0,
-              child: Row(children: [
-              ]         
-                )
-              ),
-            ),
+          shape: const CircularNotchedRectangle(),
+          child: Container(height: 50.0, child: Row(children: [])),
+        ),
         floatingActionButton:
             Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
           SizedBox(width: 50),
